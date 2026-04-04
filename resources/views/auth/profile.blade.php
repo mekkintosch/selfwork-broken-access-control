@@ -89,6 +89,28 @@
           <a href="{{route('download','filename=privacy.pdf')}}" class="d-block mb-2 text-decoration-none text-info fw-semibold"><i class="bi bi-file-earmark-pdf me-2"></i>Privacy policy</a>
           <a href="{{route('download','filename=cookie-policy.pdf')}}" class="d-block text-decoration-none text-info fw-semibold"><i class="bi bi-file-earmark-pdf me-2"></i>Cookie policy</a>
         </div>
+            <div class="card shadow-sm border-0 p-4 mb-4">
+          <h3 class="fw-semibold mb-3"><i class="bi bi-file-earmark-text me-2"></i>User Documents</h3>
+          <ul>
+    @forelse ($user->files as $file)
+        <li>
+            <a href="{{ route('download.private', $file->uid) }}">
+                {{ $file->name }}
+            </a>
+        </li>
+    @empty
+        <p class="text-muted">no files</p>
+    @endforelse
+</ul>
+
+<form action="{{ route('upload') }}" method="POST" enctype="multipart/form-data">
+    @csrf
+    <div class="d-flex">
+        <input type="file" name="file" class="form-control">
+        <button type="submit" class="btn btn-primary mx-3">Upload</button>
+    </div>
+</form>
+        </div>
       </div>
     </div>
   </div>
