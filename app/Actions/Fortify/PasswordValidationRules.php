@@ -18,6 +18,6 @@ trait PasswordValidationRules
                                                 ->numbers()
                                                 ->symbols()
                                                 ->mixedCase()
-                                                ->uncompromised(), 'confirmed'];
+                                                , 'confirmed'];
     }
 }

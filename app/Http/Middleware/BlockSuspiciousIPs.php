@@ -20,13 +20,14 @@ class BlockSuspiciousIPs
         $key = $this->throttleKey($ip);
         if (Cache::has($key . ':blocked')) {
             Session::flash('errors', "Your IP has been blocked for $this->blockMinutes minute(s) due to suspicious activity.");
+            Log::critical("IP $ip has been blocked for $this->blockMinutes minute(s) due to too many requests");
             return redirect()->back();
         }
         if (Cache::has($key)) {
             $attempts = Cache::increment($key);
             if ($attempts > $this->maxAttempts) {
                 Cache::put($key . ':blocked', true, $this->blockMinutes * 60);
-                Log::warning("IP $ip has been blocked for $this->blockMinutes minute(s) due to too many requests.");
+                Log::critical("IP $ip has been blocked for $this->blockMinutes minute(s) due to too many requests.");
                 Session::flash('errors', "Your IP has been blocked for $this->blockMinutes minute(s) due to suspicious activity.");
                 return redirect()->back();
             }
