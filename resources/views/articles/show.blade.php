@@ -4,7 +4,7 @@
       <div class="col-md-10 col-lg-8">
         <div class="card shadow-lg border-0 rounded-4 overflow-hidden mb-4 position-relative">
           <div class="position-relative">
-            <img src="https://placehold.co/1000x150/lightblue/white?text=" class="card-img-top" alt="..." style="object-fit: cover; height: 320px; filter: brightness(0.7);">
+            <img src="{{ $article->image }}" width="200" class="card-img-top" alt="..." style="object-fit: cover; height: 320px; filter: brightness(0.7);">
             <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-end p-4" style="pointer-events:none;">
               <h1 class="display-4 fw-bold text-white mb-2" style="text-shadow: 2px 2px 8px #000;">{{ $article->title }}</h1>
               <div class="mb-3">

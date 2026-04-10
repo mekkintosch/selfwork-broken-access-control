@@ -26,7 +26,7 @@
       @forelse ($articles as $article)
         <div class="col-md-4 mb-5 d-flex align-items-stretch">
           <div class="card shadow-lg border-0 w-100 h-100 article-card position-relative overflow-hidden" style="transition: transform .2s;">
-            <img src="https://placehold.co/600x400/lightblue/white?text=Article%20Image" class="card-img-top" alt="..." style="object-fit: cover; height: 220px;">
+            <img src="{{ $article->image }}" width="200" class="card-img-top" alt="..." style="object-fit: cover; height: 220px;">
             <div class="card-body d-flex flex-column">
               <h5 class="card-title fw-bold mb-2">{{$article->title}}</h5>
               <div class="mb-2">

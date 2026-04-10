@@ -66,6 +66,11 @@ class ArticleController extends Controller
 
     public function store(Request $request/*,HtmlFilterService $htmlFilterService*/)
     {
+        // ✅ VALIDAZIONE AGGIORNATA (URL INVECE DI FILE)
+        $request->validate([
+            'image' => 'nullable|url',
+        ]);
+
         // UNSECURE
         $articleData = $request->all();
 
@@ -99,6 +104,12 @@ class ArticleController extends Controller
         if (Auth::id() !== $article->user_id && !Auth::user()->isAdmin()) {
             return redirect()->route('articles.index')->with('message', 'Not authorized');
         }
+
+        // ✅ VALIDAZIONE AGGIORNATA
+        $request->validate([
+            'image' => 'nullable|url',
+        ]);
+
         // UNSECURE
         $articleData = $request->all();
 
@@ -116,7 +127,6 @@ class ArticleController extends Controller
 
     public function destroy(Article $article, Request $request)
     {
-        // SECURE
         if (Auth::id() !== $article->user_id && !Auth::user()->isAdmin()) {
             return redirect()->route('articles.show', $article)->with('message', 'Not authorized');
         }

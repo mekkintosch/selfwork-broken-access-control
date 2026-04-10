@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('articles', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('image')->nullable();
             $table->text('content');
             $table->boolean('published')->default(0);
             $table->unsignedBigInteger('user_id');
