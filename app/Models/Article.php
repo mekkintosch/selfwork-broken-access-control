@@ -17,7 +17,6 @@ class Article extends Model
     'content',
     'image',
     'user_id',
-    'published'
 ];
 
     public function user(){

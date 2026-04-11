@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Services\HtmlFilterService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class ArticleController extends Controller
 {
@@ -39,19 +40,8 @@ class ArticleController extends Controller
     }
 
     // UNSECURE
-    public function show(Article $article, Request $request)
-    {
-        if ($request->wantsJson()) {
-            return response()->json($article);
-        }
-
-        return view('articles.show', compact('article'));
-    }
-
-    // SECURE
-    // public function show(Article $article, Request $request,HtmlFilterService $htmlFilterService)
+    // public function show(Article $article, Request $request)
     // {
-    //     $article->content = $htmlFilterService->filterHtml($article->content);
     //     if ($request->wantsJson()) {
     //         return response()->json($article);
     //     }
@@ -59,12 +49,23 @@ class ArticleController extends Controller
     //     return view('articles.show', compact('article'));
     // }
 
+    // SECURE
+    public function show(Article $article, Request $request,HtmlFilterService $htmlFilterService)
+    {
+        $article->content = $htmlFilterService->filterHtml($article->content);
+        if ($request->wantsJson()) {
+            return response()->json($article);
+        }
+
+        return view('articles.show', compact('article'));
+    }
+
     public function create()
     {
         return view('articles.create');
     }
 
-    public function store(Request $request/*,HtmlFilterService $htmlFilterService*/)
+    public function store(Request $request,HtmlFilterService $htmlFilterService)
     {
         // ✅ VALIDAZIONE AGGIORNATA (URL INVECE DI FILE)
         $request->validate([
@@ -75,13 +76,21 @@ class ArticleController extends Controller
         $articleData = $request->all();
 
         // SECURE
-        //$articleData['content'] = $htmlFilterService->filterHtml($articleData['content']);
+        $articleData['content'] = $htmlFilterService->filterHtml($articleData['content']);
 
         if (!key_exists('user_id', $articleData)) {
             $articleData['user_id'] = Auth::id();
         }
 
         $article = Article::create($articleData);
+
+    //    $article = new Article();
+    //    $article->user_id = $articleData['user_id'];
+    //    $article->title = $articleData['title'];
+    //    $article->content = $articleData['content'];
+    //    $article->image = $articleData['image'];
+    //      $article->save();
+
 
         if ($request->wantsJson()) {
             return response()->json($article, 201);
@@ -92,18 +101,20 @@ class ArticleController extends Controller
 
     public function edit(Article $article)
     {
-        if (Auth::id() !== $article->user_id && !Auth::user()->isAdmin()) {
-            return redirect()->route('articles.index')->with('message', 'Noth authorized');
-        }
+        // Gate::authorize('update', $article);
+        // if (Auth::id() !== $article->user_id && !Auth::user()->isAdmin()) {
+        //     return redirect()->route('articles.index')->with('message', 'Noth authorized');
+        // }
         return view('articles.edit', compact('article'));
     }
 
     public function update(Request $request, Article $article/*,HtmlFilterService $htmlFilterService*/)
     {
 
-        if (Auth::id() !== $article->user_id && !Auth::user()->isAdmin()) {
-            return redirect()->route('articles.index')->with('message', 'Not authorized');
-        }
+        // if (Auth::id() !== $article->user_id && !Auth::user()->isAdmin()) {
+        //     return redirect()->route('articles.index')->with('message', 'Not authorized');
+        // }
+        Gate::authorize('update', $article);
 
         // ✅ VALIDAZIONE AGGIORNATA
         $request->validate([
